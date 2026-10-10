@@ -54,7 +54,9 @@ Then on npmjs.com → the package → Settings → Trusted Publisher → GitHub 
 organisation `Allan-Nava` (this case, exactly — npm compares it literally),
 repository `agent-ledger`, workflow `release.yml`, environment empty. Push the
 `v0.1.0` tag afterwards: the workflow skips the publish of a version already on the
-registry and still cuts the release.
+registry and still cuts the release. A tag pushed *before* the package exists on npm
+does not fail either: the workflow warns, skips npm, and releases on GitHub with
+`npx github:Allan-Nava/agent-ledger#<tag>` as the install line.
 
 `release.yml` is part of that configuration — renaming it breaks publishing — and
 `actions/setup-node` in it must not be given `registry-url`, or npm skips the OIDC

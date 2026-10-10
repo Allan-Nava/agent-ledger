@@ -10,6 +10,8 @@ What each coding-agent task cost, read off the agent's own transcripts.
 npx agent-ledger
 ```
 
+Not on npm yet? Run it straight from GitHub: `npx github:Allan-Nava/agent-ledger`.
+
 ```
 day         sessions  resp       peak ctx  billable  cache read    hit    cost
 ----------  --------  ----  -------------  --------  ----------  -----  ------
