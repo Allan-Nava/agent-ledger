@@ -1,0 +1,42 @@
+{
+  "name": "agent-ledger",
+  "version": "0.1.0",
+  "description": "What each coding-agent task cost, read off Claude Code's own transcripts: per session, branch or day — cost, peak context, cache hit. No API key, nothing leaves the machine.",
+  "type": "module",
+  "bin": {
+    "agent-ledger": "bin/agent-ledger.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "claude-code",
+    "claude",
+    "tokens",
+    "cost",
+    "llm-cost",
+    "prompt-caching",
+    "coding-agent",
+    "transcripts",
+    "cli"
+  ],
+  "author": "Allan Nava (https://github.com/Allan-Nava)",
+  "license": "MIT",
+  "homepage": "https://github.com/Allan-Nava/agent-ledger",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Allan-Nava/agent-ledger.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Allan-Nava/agent-ledger/issues"
+  }
+}
