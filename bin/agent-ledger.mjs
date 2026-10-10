@@ -3,10 +3,10 @@
 // transcripts. No API key; nothing leaves the machine.
 
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { dirname, join } from 'node:path'
+import { basename, dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { configDir, findSessions, projectDirFor, readSession } from '../src/claude-code.mjs'
-import { group, html, json, table } from '../src/report.mjs'
+import { compare, group, html, json, table } from '../src/report.mjs'
 
 const HELP = `agent-ledger — what each Claude Code task cost, from its transcripts
 
@@ -20,6 +20,8 @@ usage: agent-ledger [path...] [options]
   --window <n>    context window for the peak percentage (default 1000000)
   --json          machine-readable output
   --html <file>   write a self-contained HTML report
+  --compare A B   two runs side by side: each path summed, with the difference
+  --labels a,b    names for the two sides of --compare (default: the paths)
   -v, --version   print the version
   -h, --help      this text
 
@@ -27,7 +29,7 @@ Costs are API list prices; on a subscription they are what the same traffic woul
 cost on the API. Reads only — nothing leaves the machine.`
 
 function parse(argv) {
-  const o = { paths: [], by: 'session', window: 1_000_000, json: false, html: null, since: null, all: false }
+  const o = { paths: [], by: 'session', window: 1_000_000, json: false, html: null, since: null, all: false, compare: false, labels: null }
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]
     const val = () => {
@@ -42,6 +44,11 @@ function parse(argv) {
     }
     else if (a === '--all') o.all = true
     else if (a === '--json') o.json = true
+    else if (a === '--compare') o.compare = true
+    else if (a === '--labels') {
+      o.labels = val().split(',')
+      if (o.labels.length !== 2 || o.labels.some((l) => !l)) fail('--labels takes two names: --labels before,after')
+    }
     else if (a === '--by') {
       o.by = val()
       if (!['session', 'branch', 'day', 'project'].includes(o.by)) fail(`--by must be session, branch, day or project, not "${o.by}"`)
@@ -64,6 +71,24 @@ function fail(msg) {
 }
 
 const o = parse(process.argv.slice(2))
+for (const p of o.paths) {
+  if (!existsSync(p)) fail(`cannot read ${p}${/\s/.test(p) ? ' — several paths in one argument? pass each separately' : ''}`)
+}
+const load = (p) => {
+  let s = findSessions(p).map(readSession).filter((x) => x.total.responses)
+  if (o.since) s = s.filter((x) => (x.start ?? '') >= o.since)
+  return s
+}
+
+if (o.compare) {
+  if (o.paths.length !== 2 || o.all) fail('--compare takes exactly two paths: --compare <before> <after>')
+  const [a, b] = o.paths.map(load)
+  if (!a.length || !b.length) fail(`no assistant responses with usage in ${!a.length ? o.paths[0] : o.paths[1]}`)
+  const r = compare(a, b, o.labels ?? o.paths.map((p) => basename(p, '.jsonl')))
+  console.log(o.json ? JSON.stringify(r.json, null, 2) : r.text)
+  process.exit(0)
+}
+
 let paths = o.paths
 if (o.all) paths = [join(configDir(), 'projects')]
 if (!paths.length) {
@@ -71,12 +96,7 @@ if (!paths.length) {
   if (!existsSync(here)) fail(`no Claude Code sessions for ${process.cwd()} (looked in ${here}); pass a path, or --all`)
   paths = [here]
 }
-for (const p of paths) {
-  if (!existsSync(p)) fail(`cannot read ${p}${/\s/.test(p) ? ' — several paths in one argument? pass each separately' : ''}`)
-}
-
-let sessions = paths.flatMap(findSessions).map(readSession).filter((s) => s.total.responses)
-if (o.since) sessions = sessions.filter((s) => (s.start ?? '') >= o.since)
+let sessions = paths.flatMap(load)
 if (!sessions.length) fail('no assistant responses with usage found')
 sessions.sort((a, b) => (a.start ?? '').localeCompare(b.start ?? ''))
 

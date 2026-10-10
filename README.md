@@ -32,6 +32,7 @@ npx agent-ledger --all --by project     # every project on this machine
 npx agent-ledger --since 2026-10-01 --by day
 npx agent-ledger --html report.html     # a self-contained page to share
 npx agent-ledger --json                 # for your own scripts
+npx agent-ledger --compare a.jsonl b.jsonl --labels sonnet,haiku   # two runs side by side
 npx agent-ledger path/to/session.jsonl  # one session, or a project folder
 ```
 
@@ -64,12 +65,17 @@ The table is in [`src/pricing.mjs`](src/pricing.mjs), dated (`PRICES_AS_OF`), an
 re-verified before every release. Prices are someone else's product on their release
 cadence: a stale price is a bug — open an issue.
 
+## Comparing two runs
+
+`--compare A B` sums every session under each path and prints them side by side with
+the difference: responses, peak context, billable tokens, output, cache reads, hit
+ratio, and the cost — with the subagents' share on its own row, since a change of
+subagent model moves that row and little else. A and B are session files or folders.
+
 ## Not yet
 
 - **Codex CLI.** Its transcripts have a different shape; support lands once it is
   checked against real ones rather than guessed.
-- **Comparing two runs** (before/after a change, one model against another) side by
-  side.
 
 ## Licence
 

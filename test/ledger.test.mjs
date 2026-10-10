@@ -143,3 +143,23 @@ test('CLI: table, --json and --html on a project folder', () => {
 test('CLI: a missing path fails in one line', () => {
   assert.throws(() => execFileSync(process.execPath, [BIN, '/no/such/dir'], { stdio: 'pipe' }), /cannot read \/no\/such\/dir/)
 })
+
+test('CLI: --compare sums each side and shows the subagent cost apart', () => {
+  const u = { input_tokens: 1000, output_tokens: 500, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 }
+  const sub = { input_tokens: 1_000_000, output_tokens: 0, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 }
+  const dir = project([
+    ['sonnet', response('m1', 'claude-opus-5-5', u), [response('a1', 'claude-sonnet-5-5', sub)]],
+    ['haiku', response('m2', 'claude-opus-5-5', u), [response('a2', 'claude-haiku-5-5', sub)]],
+  ])
+  const j = JSON.parse(execFileSync(process.execPath, [BIN, '--compare', join(dir, 'sonnet.jsonl'), join(dir, 'haiku.jsonl'), '--labels', 'sonnet,haiku', '--json'], { encoding: 'utf8' }))
+  assert.deepEqual(j.labels, ['sonnet', 'haiku'])
+  close(j.a.sub.cost, 2)
+  close(j.b.sub.cost, 0.5) // a 1M-token prompt is above Haiku 5.5's 100K tier
+  assert.equal(j.a.sub.count, 1)
+  const text = execFileSync(process.execPath, [BIN, '--compare', join(dir, 'sonnet.jsonl'), join(dir, 'haiku.jsonl')], { encoding: 'utf8' })
+  assert.match(text, /subagent cost\s+\$2\.00\s+\$0\.500\s+-75%/)
+})
+
+test('CLI: --compare refuses anything but two paths', () => {
+  assert.throws(() => execFileSync(process.execPath, [BIN, '--compare', BIN], { stdio: 'pipe' }), /exactly two paths/)
+})

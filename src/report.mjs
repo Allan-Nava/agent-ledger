@@ -118,3 +118,43 @@ ${body}
 </main></body></html>
 `
 }
+
+// Two runs side by side — before/after a change, one model against another. Each side
+// is every session under its path, summed; the subagent rows say how much of the cost
+// was delegated, which is the question when the subagent model is what changed.
+export function compare(a, b, labels) {
+  const sum = (sessions) => {
+    const t = totals(group(sessions, 'session'))
+    const sub = { cost: 0, responses: 0, count: 0 }
+    let peak = 0
+    for (const s of sessions) {
+      sub.cost += s.subagents.cost
+      sub.responses += s.subagents.responses
+      sub.count += s.subagentCount
+      peak = Math.max(peak, s.main.peak)
+    }
+    return { ...t, peak, sub }
+  }
+  const A = sum(a)
+  const B = sum(b)
+  const delta = (x, y) => (x ? `${y >= x ? '+' : ''}${((100 * (y - x)) / x).toFixed(0)}%` : '—')
+  const rows = [
+    ['sessions', n(A.sessions), n(B.sessions), ''],
+    ['responses', n(A.responses), n(B.responses), delta(A.responses, B.responses)],
+    ['peak ctx', n(A.peak), n(B.peak), delta(A.peak, B.peak)],
+    ['billable', n(billable(A)), n(billable(B)), delta(billable(A), billable(B))],
+    ['output', n(A.output), n(B.output), delta(A.output, B.output)],
+    ['cache read', n(A.read), n(B.read), delta(A.read, B.read)],
+    ['hit', pct(hitRatio(A)), pct(hitRatio(B)), ''],
+    ['subagents', n(A.sub.count), n(B.sub.count), ''],
+    ['subagent cost', usd(A.sub.cost), usd(B.sub.cost), delta(A.sub.cost, B.sub.cost)],
+    ['cost', usd(A.cost) + (A.unpriced ? '*' : ''), usd(B.cost) + (B.unpriced ? '*' : ''), delta(A.cost, B.cost)],
+  ]
+  const cols = ['', labels[0], labels[1], `${labels[1]} vs ${labels[0]}`]
+  const w = cols.map((c, i) => Math.max(c.length, ...rows.map((r) => r[i].length)))
+  const fmt = (r) => r.map((c, i) => (i === 0 ? c.padEnd(w[i]) : c.padStart(w[i]))).join('  ')
+  const out = [fmt(cols), w.map((x) => '-'.repeat(x)).join('  '), ...rows.map(fmt), '']
+  out.push(`API list prices as of ${PRICES_AS_OF}. Each side is every session under its path, summed; peak ctx is the larger main-thread peak.`)
+  if (A.unpriced || B.unpriced) out.push('* responses from a model with no price in the table are left out of the cost.')
+  return { text: out.join('\n'), json: { pricesAsOf: PRICES_AS_OF, labels, a: A, b: B } }
+}
