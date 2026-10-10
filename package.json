@@ -1,6 +1,6 @@
 {
-  "name": "agent-ledger",
-  "version": "0.1.0",
+  "name": "@allan_nava/agent-ledger",
+  "version": "0.1.1",
   "description": "What each coding-agent task cost, read off Claude Code's own transcripts: per session, branch or day — cost, peak context, cache hit. No API key, nothing leaves the machine.",
   "type": "module",
   "bin": {

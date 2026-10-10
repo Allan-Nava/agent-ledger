@@ -37,7 +37,8 @@ repository), verifies the registry serves the version, cuts the GitHub release a
 closes the milestone named `v<version>` when it has no open issues.
 
 ```bash
-# bump package.json, then
+# bump package.json (the npm name is @allan_nava/agent-ledger — npm refused the
+# unscoped `agent-ledger` as too similar to `agentledger`), then
 npm test
 git tag -a v0.2.0 -m "agent-ledger 0.2.0" && git push origin v0.2.0
 ```
@@ -52,7 +53,7 @@ npm publish --access public
 
 Then on npmjs.com → the package → Settings → Trusted Publisher → GitHub Actions:
 organisation `Allan-Nava` (this case, exactly — npm compares it literally),
-repository `agent-ledger`, workflow `release.yml`, environment empty. Push the
+repository `agent-ledger`, workflow `release.yml` — on the package `@allan_nava/agent-ledger`, environment empty. Push the
 `v0.1.0` tag afterwards: the workflow skips the publish of a version already on the
 registry and still cuts the release. A tag pushed *before* the package exists on npm
 does not fail either: the workflow warns, skips npm, and releases on GitHub with

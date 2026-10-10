@@ -7,10 +7,10 @@
 What each coding-agent task cost, read off the agent's own transcripts.
 
 ```bash
-npx agent-ledger
+npx @allan_nava/agent-ledger
 ```
 
-Not on npm yet? Run it straight from GitHub: `npx github:Allan-Nava/agent-ledger`.
+or `npm i -g @allan_nava/agent-ledger` and run `agent-ledger`.
 
 ```
 day         sessions  resp       peak ctx  billable  cache read    hit    cost
@@ -31,15 +31,17 @@ nothing leaves the machine.
 
 ## Usage
 
+With `npm i -g @allan_nava/agent-ledger` — or put `npx @allan_nava/` in front of each:
+
 ```bash
-npx agent-ledger                        # this directory's sessions
-npx agent-ledger --by branch            # one row per git branch — the closest a transcript gets to "per ticket"
-npx agent-ledger --all --by project     # every project on this machine
-npx agent-ledger --since 2026-10-01 --by day
-npx agent-ledger --html report.html     # a self-contained page to share
-npx agent-ledger --json                 # for your own scripts
-npx agent-ledger --compare a.jsonl b.jsonl --labels sonnet,haiku   # two runs side by side
-npx agent-ledger path/to/session.jsonl  # one session, or a project folder
+agent-ledger                        # this directory's sessions
+agent-ledger --by branch            # one row per git branch — the closest a transcript gets to "per ticket"
+agent-ledger --all --by project     # every project on this machine
+agent-ledger --since 2026-10-01 --by day
+agent-ledger --html report.html     # a self-contained page to share
+agent-ledger --json                 # for your own scripts
+agent-ledger --compare a.jsonl b.jsonl --labels sonnet,haiku   # two runs side by side
+agent-ledger path/to/session.jsonl  # one session, or a project folder
 ```
 
 Node 18 or newer. No dependencies.
