@@ -1,0 +1,19 @@
+<!doctype html>
+<!-- Source of assets/social-preview.png (1200x630): see CONTRIBUTING, "Brand assets". -->
+<html><head><meta charset="utf-8"><style>
+body{margin:0;width:1200px;height:630px;background:#171513;font-family:"Segoe UI",system-ui,sans-serif;color:#ece8e2;display:flex;align-items:center;gap:60px;padding:0 76px;box-sizing:border-box}
+img{width:240px;height:240px;flex:none}
+h1{font-size:78px;margin:0 0 12px;letter-spacing:-1.5px}
+p{font-size:31px;line-height:1.3;margin:0 0 30px;color:#b3aca2;max-width:760px}
+pre{margin:0;font:22px/1.5 "Cascadia Mono",Consolas,monospace;background:#211e1b;border:1px solid #2e2a26;border-radius:14px;padding:18px 22px;color:#ece8e2}
+.a{color:#d0764f}
+</style></head><body>
+<img src="logo.svg" alt="">
+<div>
+<h1>agent-ledger</h1>
+<p>What each coding-agent task cost, read off Claude Code's own transcripts.</p>
+<pre><span class="a">$</span> npx agent-ledger --by branch
+feat/rate-limits   3 sessions    <span class="a">$9.30</span>
+refactor/billing   1 session    <span class="a">$15.10</span></pre>
+</div>
+</body></html>

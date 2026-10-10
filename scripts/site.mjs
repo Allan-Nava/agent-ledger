@@ -6,7 +6,7 @@
 //   node scripts/site.mjs
 
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
+import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -27,4 +27,5 @@ const page = readFileSync(join(ROOT, 'site', 'index.html'), 'utf8')
   .replace('{{TABLE}}', esc(table))
   .replaceAll('{{VERSION}}', version)
 writeFileSync(join(OUT, 'index.html'), page)
+for (const f of ['logo.svg', 'social-preview.png']) copyFileSync(join(ROOT, 'assets', f), join(OUT, f))
 console.log(`built ${OUT}: index.html, report.html (v${version})`)

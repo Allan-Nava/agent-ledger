@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Allan-Nava/agent-ledger/main/assets/logo.svg" alt="agent-ledger" width="96" height="96">
+</p>
+
 # agent-ledger
 
 What each coding-agent task cost, read off the agent's own transcripts.

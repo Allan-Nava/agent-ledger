@@ -14,6 +14,21 @@ Zero dependencies and Node 18 are the two constraints; CI runs the tests on Node
 the current pricing page before a release and move the date with it, even when nothing
 changed.
 
+## Brand assets
+
+`assets/logo.svg` is the single source: a receipt on the terracotta tile qrspi uses,
+on the same 64×64 grid with a 14px radius, so it holds at 16px. The site copies it as
+its favicon and header mark; the README links the raw GitHub URL so it also renders on
+npm. `assets/social-preview.png` (1200×630, the card a shared link shows) is rendered
+from `assets/social-preview.html` with headless Chrome:
+
+```bash
+chrome --headless=new --hide-scrollbars --allow-file-access-from-files \
+  --window-size=1200,630 --screenshot=assets/social-preview.png assets/social-preview.html
+```
+
+`assets/` is not in `package.json#files`: the tarball links to the GitHub copy.
+
 ## Releasing
 
 Releases run from [`release.yml`](.github/workflows/release.yml) on a `v*` tag. It

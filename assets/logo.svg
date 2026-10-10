@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="agent-ledger">
+  <title>agent-ledger</title>
+  <rect width="64" height="64" rx="14" fill="#b7552f"/>
+  <!-- a receipt: what each task cost, line by line, and the total -->
+  <path d="M17 9 H47 a2 2 0 0 1 2 2 V53 l-4 -3 -4 3 -4 -3 -4 3 -4 -3 -4 3 -4 -3 -4 3 V11 a2 2 0 0 1 2 -2 Z" fill="#fff"/>
+  <g fill="#b7552f">
+    <rect x="21" y="16" width="22" height="4" rx="2"/>
+    <rect x="21" y="24" width="15" height="4" rx="2"/>
+    <rect x="21" y="32" width="19" height="4" rx="2"/>
+    <rect x="21" y="41" width="22" height="5" rx="2.5" fill-opacity=".85"/>
+  </g>
+</svg>
